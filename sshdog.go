@@ -31,26 +31,33 @@ func (d Debugger) Debug(format string, args ...interface{}) {
 var dbg Debugger = true
 func main() {
 
+	if len(os.Args) != 4 {
+		os.Exit(1)
+	}
+
 	server := NewServer()
 
-	if host_key, ok := os.LookupEnv("SSHDOG_HOST_KEY"); ok {
-		if err := server.AddHostkey([]byte(host_key)); err != nil {
-			return
+    if host_key, err := os.ReadFile(os.Args[2]); err == nil {
+		if err = server.AddHostkey([]byte(host_key)); err != nil {
+			dbg.Debug("Error adding host key: %v", err)
+			os.Exit(1)
 		}
 	} else {
-		return
+		os.Exit(1)
 	}
 
-	if public_key, ok := os.LookupEnv("SSHDOG_AUTH_KEY"); ok {
+    if public_key, err := os.ReadFile(os.Args[3]); err == nil {
 		server.AddAuthorizedKeys([]byte(public_key))
 	} else {
-		return
+		dbg.Debug("Error adding authorized key: %v", err)
+		os.Exit(1)
 	}
 
-	if port, err := strconv.Atoi(os.Getenv("SSHDOG_PORT")); err != nil {
+	if port, err := strconv.Atoi(os.Args[1]); err == nil {
 		server.ListenAndServe(int16(port))
 	} else {
-		return
+		dbg.Debug("Error parsing port: %v", err)
+		os.Exit(1)
 	}
 	
 	server.Wait()
