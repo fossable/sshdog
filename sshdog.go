@@ -54,11 +54,9 @@ func main() {
 	}
 
 	if port, err := strconv.Atoi(os.Args[1]); err == nil {
-		server.ListenAndServe(int16(port))
+		server.ListenAndServeForever(int16(port))
 	} else {
 		dbg.Debug("Error parsing port: %v", err)
 		os.Exit(1)
 	}
-	
-	server.Wait()
 }

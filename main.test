@@ -1,6 +1,6 @@
 #!/bin/bash -x
 
-rm -f /tmp/sshdog*
+rm -f /tmp/sshdog_*
 ssh-keygen -t rsa -b 2048 -N "" -C "" -f /tmp/sshdog_key
 ssh-keygen -t rsa -b 2048 -N "" -C "" -f /tmp/sshdog_host_key
 chmod 600 /tmp/sshdog*
@@ -9,6 +9,7 @@ chmod 600 /tmp/sshdog*
 ./sshdog 5555 /tmp/sshdog_host_key /tmp/sshdog_key.pub &
 
 # Try connecting
-ssh -o StrictHostKeyChecking=no -p 5555 -i /tmp/sshdog_key localhost whoami
+sleep 2
+ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -p 5555 -i /tmp/sshdog_key localhost whoami
 
 kill $!

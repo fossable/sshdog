@@ -16,8 +16,6 @@
 package main
 
 import (
-	"crypto/rand"
-	"crypto/rsa"
 	"fmt"
 	"io"
 	"net"
@@ -179,15 +177,3 @@ func (s *Server) AddHostkey(keyData []byte) error {
 	return err
 }
 
-func (s *Server) RandomHostkey() error {
-	key, err := rsa.GenerateKey(rand.Reader, 2048)
-	if err != nil {
-		return err
-	}
-	signer, err := ssh.NewSignerFromSigner(key)
-	if err != nil {
-		return err
-	}
-	s.ServerConfig.AddHostKey(signer)
-	return nil
-}
