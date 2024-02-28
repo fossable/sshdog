@@ -273,8 +273,7 @@ func (conn *ServerConn) SCPSink(path string, dirMode bool, ch ssh.Channel) error
 			if err := scpSendAck(ch, 0, ""); err != nil {
 				return err
 			}
-			fpath := filepath.Join(path, parsed.Name)
-			if err := receiveFile(fpath, parsed, readbuf); err != nil {
+			if err := receiveFile(path, parsed, readbuf); err != nil {
 				scpSendAck(ch, 2, err.Error())
 				return err
 			}
